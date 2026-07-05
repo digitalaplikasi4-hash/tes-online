@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TES ONLINE SPMB | SMK IT AL HUDA CINTAMULYA</title>
+    <!-- Google Fonts Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* ==========================================================================
+           CSS STYLE (Glassmorphism & Responsive Design)
+           ========================================================================== */
+        :root {
+            --primary-gradient: linear-gradient(135deg, #11998e, #38ef7d);
+            --dark-green: #0e6246;
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --text-main: #2c3e50;
+            --text-muted: #7f8c8d;
+            --success-color: #2ecc71;
+            --danger-color: #e74c3c;
+            --neutral-gray: #bdc3c7;
+            --radius: 20px;
+            --shadow: 0 8px 32px 0 rgba(0, 150, 80, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: #f4f7f6;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow-x: hidden;
+            padding: 20px;
+        }
+
+        /* Watermark Background */
+        .watermark-bg {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 450px;
+            height: 450px;
+            background-image: url('assets/logo.png');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain;
+            opacity: 0.08;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Loading Overlay Screen */
+        .loading-overlay {
+            position: fixed;
+            top:0; left:0; right:0; bottom:0;
+            background: #ffffff;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.4s ease;
+        }
+        .loading-overlay.hide {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #11998e;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Container Master */
+        .app-container {
+            width: 100%;
+            max-width: 1100px;
+            z-index: 2;
+        }
+
+        /* Card Modern Style & Glassmorphism */
+        .card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: var(--radius);
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hide { display: none !important; }
+
+        /* Form Control Stylings */
+        .login-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .logo-box img {
+            height: 90px;
+            object-fit: contain;
+            margin-bottom: 15px;
+        }
+        .login-header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark-green);
+        }
+        .login-header h2 {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+        .instruction {
+            font-size: 13px;
+            margin-top: 10px;
+            color: #616e7c;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--dark-green);
+        }
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group input[type="tel"],
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1.5px solid #dcdde1;
+            border-radius: 12px;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.7);
+        }
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: #11998e;
+            box-shadow: 0 0 8px rgba(17, 153, 142, 0.2);
+            background: #fff;
+        }
+
+        /* Radio Group */
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 5px;
+        }
+        .radio-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .radio-label input {
+            accent-color: #11998e;
+            scale: 1.2;
+        }
+
+        /* Buttons Engine */
+        .btn-primary, .btn-secondary, .btn-danger, .btn-whatsapp {
+            padding: 12px 24px;
+            border-radius: 12px;
+            border: none;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+        }
+        .btn-primary:hover {
+            box-shadow: 0 5px 15px rgba(56, 239, 125, 0.4);
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #4f5d73;
+        }
+        .btn-secondary:hover { background: #d2d2d2; }
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+        }
+        .btn-danger:hover { background: #c0392b; }
+        .btn-whatsapp {
+            background: #25D366;
+            color: white;
+            font-size: 18px;
+            letter-spacing: 1px;
+        }
+        .btn-whatsapp:hover {
+            background: #20ba5a;
+            box-shadow: 0 5px 15px rgba(37, 211, 102, 0.4);
+        }
+        .btn-block { width: 100%; display: flex; }
+
+        /* Header & Info Area CBT */
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+        }
+        .main-header h1 { font-size: 20px; color: var(--dark-green); font-weight: 700;}
+        .main-header h2 { font-size: 14px; color: var(--text-muted); }
+
+        .timer-box {
+            background: #2c3e50;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .session-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            font-size: 14px;
+        }
+        .info-user p { margin-bottom: 4px; font-weight: 500;}
+        .info-user i { color: #11998e; width: 20px;}
+
+        .info-progress { width: 40%; }
+        .progress-text { font-size: 12px; margin-bottom: 5px; text-align: right; font-weight: 500;}
+        .progress-bar-container {
+            width: 100%;
+            height: 10px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: var(--primary-gradient);
+            transition: width 0.4s ease;
+        }
+
+        /* Grid Layout CBT */
+        .quiz-grid {
+            display: grid;
+            grid-template-columns: 2.5fr 1fr;
+            gap: 20px;
+        }
+
+        .question-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px dashed #e2e8f0;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        .badge-category {
+            background: rgba(17, 153, 142, 0.15);
+            color: var(--dark-green);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .question-number-title {
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .question-body {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            font-weight: 500;
+        }
+
+        /* Options Wrapper Layout */
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+        .option-item {
+            display: flex;
+            align-items: center;
+            background: #ffffff;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 14px 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .option-item:hover {
+            border-color: #38ef7d;
+            background: rgba(56, 239, 125, 0.03);
+        }
+        .option-item.selected {
+            border-color: #11998e;
+            background: rgba(17, 153, 142, 0.08);
+        }
+        .option-indicator {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #f1f2f6;
+            border: 1px solid #bdc3c7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-right: 15px;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+        .option-item.selected .option-indicator {
+            background: var(--primary-gradient);
+            color: white;
+            border-color: transparent;
+        }
+        .option-text { font-size: 14px; font-weight: 400; }
+
+        .quiz-navigation-actions {
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 20px;
+        }
+
+        /* Number Grid Navigation styling */
+        .nav-column h3 { font-size: 16px; margin-bottom: 15px; text-align: center; color: var(--dark-green);}
+        .number-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .num-btn {
+            aspect-ratio: 1;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #bdc3c7; 
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        .num-btn.answered { background: var(--success-color); }
+        .num-btn.active {
+            box-shadow: 0 0 0 3px var(--dark-green);
+            transform: scale(1.05);
+        }
+        .divider {
+            border: 0;
+            height: 1px;
+            background: #e2e8f0;
+            margin: 15px 0;
+        }
+
+        /* Result Screen Content Styles */
+        .text-center { text-align: center; }
+        .success-icon {
+            font-size: 60px;
+            color: var(--success-color);
+            margin-bottom: 10px;
+        }
+        .result-layout {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 30px;
+            margin-top: 25px;
+        }
+        .result-section h3 {
+            font-size: 16px;
+            margin-bottom: 15px;
+            color: var(--dark-green);
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 5px;
+        }
+        .table-result {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table-result td {
+            padding: 8px 4px;
+            font-size: 14px;
+            vertical-align: top;
+        }
+        .table-result td:first-child { width: 130px; font-weight: 500; color: var(--text-muted); }
+        .table-result td:nth-child(2) { width: 15px; }
+        .bold { font-weight: 600; color: var(--text-main); }
+
+        .score-summary-box {
+            background: #f8fafc;
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px dashed var(--neutral-gray);
+        }
+        .score-display {
+            font-size: 55px;
+            font-weight: 700;
+            color: var(--dark-green);
+            line-height: 1;
+            margin: 10px 0;
+        }
+        .score-category {
+            font-size: 16px;
+            font-weight: 600;
+            padding: 4px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            background: #e2e8f0;
+            margin-bottom: 20px;
+        }
+        .score-details-flex {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+        }
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+        .detail-item .label { font-size: 12px; color: var(--text-muted); }
+        .detail-item .val { font-size: 20px; font-weight: 700; }
+        .detail-item.correct .val { color: var(--success-color); }
+        .detail-item.wrong .val { color: var(--danger-color); }
+        .time-stamp p { font-size: 12px; color: var(--text-muted); }
+
+        .mt-3 { margin-top: 15px; }
+        .mt-4 { margin-top: 25px; }
+
+        /* RESPONSIVE BREAKPOINTS */
+        @media (max-width: 850px) {
+            .quiz-grid { grid-template-columns: 1fr; }
+            .result-layout { grid-template-columns: 1fr; gap: 20px; }
+            .session-info { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .info-progress { width: 100%; }
+        }
+
+        @media (max-width: 480px) {
+            body { padding: 10px; }
+            .card { padding: 15px; border-radius: 15px; }
+            .main-header { padding: 15px; flex-direction: column; text-align: center; gap: 10px; }
+            .timer-box { width: 100%; justify-content: center; }
+            .radio-group { flex-direction: column; gap: 10px; }
+            .watermark-bg { width: 280px; height: 280px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Loading Screen Overlay -->
+    <div id="loading-screen" class="loading-overlay">
+        <div class="spinner"></div>
+        <p>Memuat Sistem CBT...</p>
+    </div>
+
+    <!-- Background Watermark Mask -->
+    <div class="watermark-bg"></div>
+
+    <div class="app-container">
+        
+        <!-- 1. HALAMAN LOGIN PESERTA -->
+        <section id="login-page" class="card fade-in">
+            <div class="login-header">
+                <div class="logo-box">
+                    <img src="assets/logo.png" alt="Logo SMK IT Al Huda" onerror="this.src='https://placehold.co/100x100?text=SMK+IT'">
+                </div>
+                <h1>TES ONLINE SPMB</h1>
+                <h2>SMK IT AL HUDA CINTAMULYA</h2>
+                <p class="instruction">Silakan lengkapi biodata pendaftaran Anda dengan benar sebelum memulai ujian online.</p>
+            </div>
+            
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="nama"><i class="fa-solid fa-user"></i> Nama Lengkap</label>
+                    <input type="text" id="nama" placeholder="Masukkan nama lengkap" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="nisn"><i class="fa-solid fa-id-card"></i> NISN</label>
+                    <input type="number" id="nisn" placeholder="Masukkan 10 digit NISN" required>
+                </div>
+                
+                <div class="form-group">
+                    <label><i class="fa-solid fa-venus-mars"></i> Jenis Kelamin</label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="jk" value="Laki-laki" required>
+                            <span>Laki-laki</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="jk" value="Perempuan">
+                            <span>Perempuan</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="asal_sekolah"><i class="fa-solid fa-school"></i> Asal Sekolah</label>
+                    <input type="text" id="asal_sekolah" placeholder="Masukkan sekolah asal" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="alamat"><i class="fa-solid fa-location-dot"></i> Alamat Rumah</label>
+                    <textarea id="alamat" rows="2" placeholder="Masukkan alamat domisili lengkap" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="whatsapp"><i class="fa-brands fa-whatsapp"></i> Nomor WhatsApp</label>
+                    <input type="tel" id="whatsapp" placeholder="Contoh: 0831XXXXXXXX" required>
+                </div>
+                
+                <button type="submit" class="btn-primary btn-block">
+                    <i class="fa-solid fa-play"></i> Mulai Tes
+                </button>
+            </form>
+        </section>
+
+        <!-- 2. HALAMAN DASHBOARD / INTERFACE UTAMA TES -->
+        <section id="quiz-page" class="fade-in hide">
+            <header class="main-header card">
+                <div class="header-title">
+                    <h1>TES ONLINE SPMB</h1>
+                    <h2>SMK IT AL HUDA CINTAMULYA</h2>
+                </div>
+                <div class="timer-box">
+                    <i class="fa-regular fa-clock"></i>
+                    <span id="countdown-timer">30:00</span>
+                </div>
+            </header>
+
+            <div class="session-info card">
+                <div class="info-user">
+                    <p><i class="fa-solid fa-user-circle"></i> <span id="sess-nama">-</span></p>
+                    <p><i class="fa-solid fa-graduation-cap"></i> <span id="sess-asal">-</span></p>
+                </div>
+                <div class="info-progress">
+                    <div class="progress-text">Progress Pengerjaan: <span id="progress-percent">0%</span></div>
+                    <div class="progress-bar-container">
+                        <div id="progress-bar" class="progress-bar-fill"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-grid">
+                <div class="question-column card">
+                    <div class="question-meta">
+                        <span class="badge-category" id="question-category">Kategori: -</span>
+                        <span class="question-number-title">Soal Nomor <span id="current-q-num">1</span></span>
+                    </div>
+                    
+                    <div class="question-body" id="question-text">Memuat Soal...</div>
+                    
+                    <div class="options-container" id="options-wrapper"></div>
+
+                    <div class="quiz-navigation-actions">
+                        <button id="btn-prev" class="btn-secondary"><i class="fa-solid fa-arrow-left"></i> Sebelumnya</button>
+                        <button id="btn-next" class="btn-primary">Selanjutnya <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                </div>
+
+                <div class="nav-column card">
+                    <h3>Navigasi Soal</h3>
+                    <div class="number-grid" id="number-nav-grid"></div>
+                    <hr class="divider">
+                    <button id="btn-submit-exam" class="btn-danger btn-block">
+                        <i class="fa-solid fa-circle-check"></i> Akhiri & Selesai Tes
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. HALAMAN HASIL TES -->
+        <section id="result-page" class="card fade-in hide">
+            <div class="result-header text-center">
+                <div class="success-icon">
+                    <i class="fa-solid fa-square-poll-vertical"></i>
+                </div>
+                <h1>Hasil Penilaian Selesai</h1>
+                <p>Ujian Selesai Dilaksanakan</p>
+            </div>
+
+            <div class="result-layout">
+                <div class="result-section">
+                    <h3><i class="fa-solid fa-address-card"></i> Biodata Peserta</h3>
+                    <table class="table-result">
+                        <tr><td>Nama Peserta</td><td>:</td><td id="res-nama" class="bold"></td></tr>
+                        <tr><td>NISN</td><td>:</td><td id="res-nisn"></td></tr>
+                        <tr><td>Jenis Kelamin</td><td>:</td><td id="res-jk"></td></tr>
+                        <tr><td>Asal Sekolah</td><td>:</td><td id="res-asal"></td></tr>
+                        <tr><td>Alamat Rumah</td><td>:</td><td id="res-alamat"></td></tr>
+                        <tr><td>Nomor WhatsApp</td><td>:</td><td id="res-wa"></td></tr>
+                    </table>
+                </div>
+
+                <div class="result-section score-summary-box text-center">
+                    <h3>Skor Akhir</h3>
+                    <div class="score-display" id="res-skor">0</div>
+                    <div class="score-category" id="res-kategori">-</div>
+                    
+                    <div class="score-details-flex">
+                        <div class="detail-item correct">
+                            <span class="label">Benar</span>
+                            <span class="val" id="res-benar">0</span>
+                        </div>
+                        <div class="detail-item wrong">
+                            <span class="label">Salah</span>
+                            <span class="val" id="res-salah">0</span>
+                        </div>
+                    </div>
+
+                    <div class="time-stamp mt-3">
+                        <p><i class="fa-regular fa-calendar-days"></i> Tanggal: <span id="res-tanggal">-</span></p>
+                        <p><i class="fa-regular fa-clock"></i> Jam: <span id="res-jam">-</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <button id="btn-whatsapp-send" class="btn-whatsapp btn-block">
+                    <i class="fa-brands fa-whatsapp"></i> SELESAI
+                </button>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        // ==========================================================================
+        // DATA BANK SOAL (20 SOAL SESUAI STRUKTUR & KOMPOSISI)
+        // ==========================================================================
+        const questions = [
+            // Literasi
+            { id: 1, kategori: "Literasi", question: "Gagasan utama atau pikiran yang menjadi landasan dalam mengembangkan sebuah paragraf disebut sebagai...", options: ["Ide pokok", "Kalimat penjelas", "Kesimpulan", "Alur cerita"], answer: "A" },
+            { id: 2, kategori: "Literasi", question: "Pendidikan berbasis teknologi di SMK bertujuan untuk menyelaraskan keterampilan siswa dengan kebutuhan industri modern. Berdasarkan teks tersebut, apa fokus utama pendidikan di SMK?", options: ["Mencari keuntungan industri", "Menyelaraskan keterampilan dengan kebutuhan industri", "Mengurangi jam belajar praktik", "Menghapus materi teori dasar"], answer: "B" },
+            { id: 3, kategori: "Literasi", question: "Setiap hari, siswa SMK IT Al Huda dilatih kedisiplinan dan pembelajaran komputer secara intensif. Hasilnya, lulusan sekolah ini cepat mendapatkan pekerjaan. Kesimpulan yang tepat adalah...", options: ["Disiplin dan keahlian komputer mendukung keterserapan kerja lulusan", "Semua sekolah komputer pasti meluluskan siswa yang disiplin", "Pembelajaran teori lebih penting daripada praktik", "Siswa tidak perlu belajar jika sudah disiplin"], answer: "A" },
+            // Numerasi
+            { id: 4, kategori: "Numerasi", question: "Hasil dari perhitungan matematika dasar (15 x 4) - (20 : 5) + 12 adalah...", options: ["64", "68", "72", "56"], answer: "B" },
+            { id: 5, kategori: "Numerasi", question: "Seorang siswa membeli flashdisk seharga Rp100.000 dan mendapatkan diskon sebesar 15%. Berapakah uang yang harus dibayarkan siswa tersebut?", options: ["Rp80.000", "Rp85.000", "Rp90.000", "Rp95.000"], answer: "B" },
+            { id: 6, kategori: "Numerasi", question: "Bentuk pecahan paling sederhana dari angka desimal 0,75 adalah...", options: ["1/2", "2/3", "3/4", "4/5"], answer: "C" },
+            // Penalaran Logis
+            { id: 7, kategori: "Penalaran Logis", question: "Perhatikan pola urutan berikut: Segitiga, Kotak, Lingkaran, Segitiga, Kotak, ... . Bentuk selanjutnya yang logis adalah...", options: ["Segitiga", "Kotak", "Lingkaran", "Bintang"], answer: "C" },
+            { id: 8, kategori: "Penalaran Logis", question: "Sebab: Hujan deras mengguyur area sekolah selama 5 jam tanpa henti.<br>Akibat: Selokan yang tersumbat sampah meluap ke halaman sekolah. <br>Analisis yang benar adalah...", options: ["Sebab tidak berhubungan dengan akibat", "Akibat mendahului sebab", "Hujan deras dan sampah menyumbat menjadi kombinasi penyebab banjir halaman", "Banjir halaman disebabkan oleh lampu mati"], answer: "C" },
+            { id: 9, kategori: "Penalaran Logis", question: "Jika semua siswa SMK IT memakai seragam rapi, dan Budi adalah seorang siswa SMK IT, maka kesimpulan yang sah adalah...", options: ["Budi kadang-kadang rapi", "Budi memakai seragam rapi", "Budi tidak memakai seragam", "Bukan Budi yang dimaksud"], answer: "B" },
+            // Penalaran Verbal
+            { id: 10, kategori: "Penalaran Verbal", question: "Sinonim (persamaan kata) yang paling tepat untuk kata 'Canggih' adalah...", options: ["Kuno", "Sederhana", "Modern / Mutakhir", "Lambat"], answer: "C" },
+            { id: 11, kategori: "Penalaran Verbal", question: "Antonim (lawan kata) yang paling tepat untuk kata 'Sekuler' adalah...", options: ["Tradisional", "Keagamaan", "Duniawi", "Modern"], answer: "B" },
+            { id: 12, kategori: "Penalaran Verbal", question: "Komputer : Programmer = Mobil : ...", options: ["Montir / Sopir", "Roda", "Bensin", "Jalan raya"], answer: "A" },
+            // Tes Potensi Akademik
+            { id: 13, kategori: "Tes Potensi Akademik", question: "Lanjutkan pola angka berikut secara logis: 2, 4, 8, 16, 32, ...", options: ["48", "64", "128", "96"], answer: "B" },
+            { id: 14, kategori: "Tes Potensi Akademik", question: "Sebuah bus melaju lebih cepat dari truk, tetapi lebih lambat dari kereta cepat. Kendaraan manakah yang paling lambat?", options: ["Bus", "Truk", "Kereta Cepat", "Sama saja"], answer: "B" },
+            { id: 15, kategori: "Tes Potensi Akademik", question: "Jika A lebih besar dari B, dan B lebih besar dari C, manakah pernyataan di bawah ini yang pasti benar?", options: ["A lebih kecil dari C", "A sama dengan C", "A lebih besar dari C", "Hubungan tidak bisa ditentukan"], answer: "C" },
+            // Kompetensi Dasar
+            { id: 16, kategori: "Kompetensi Dasar", question: "Perangkat keras komputer yang berfungsi sebagai otak utama untuk memproses data dan instruksi dinamakan...", options: ["Monitor", "RAM", "CPU (Processor)", "Harddisk"], answer: "C" },
+            { id: 17, kategori: "Kompetensi Dasar", question: "Komponen pada kendaraan bermotor yang berfungsi menghasilkan percikan api guna membakar campuran bahan bakar dan udara di silinder adalah...", options: ["Aki", "Busi", "Karburator", "Piston"], answer: "B" },
+            { id: 18, kategori: "Kompetensi Dasar", question: "Sistem pencatatan keuangan ganda yang menyusun posisi debit dan kredit secara seimbang merupakan prinsip utama dari ilmu...", options: ["Manajemen", "Akuntansi", "Pemasaran", "Perpajakan"], answer: "B" },
+            // Minat dan Bakat
+            { id: 19, kategori: "Minat dan Bakat", question: "Saya lebih suka bekerja menggunakan perangkat komputer di dalam ruangan dibandingkan melakukan pekerjaan fisik di luar lapangan.", options: ["Sangat Setuju", "Setuju", "Tidak Setuju", "Sangat Tidak Setuju"], answer: "A" },
+            { id: 20, kategori: "Minat dan Bakat", question: "Saya merasa tertantang dan senang mencari solusi ketika menemukan suatu perangkat teknologi atau sistem komputer sedang mengalami gangguan (error).", options: ["Sangat Setuju", "Setuju", "Tidak Setuju", "Sangat Tidak Setuju"], answer: "A" }
+        ];
+
+        // ==========================================================================
+        // LOGIKA ENGINES JAVASCRIPT
+        // ==========================================================================
+        document.addEventListener("DOMContentLoaded", () => {
+            let currentQuestionIndex = 0;
+            let userAnswers = {};
+            let examTimer = null;
+            let totalTime = 30 * 60; // 30 menit
+            let userData = {};
+
+            const loadingScreen = document.getElementById("loading-screen");
+            const loginPage = document.getElementById("login-page");
+            const quizPage = document.getElementById("quiz-page");
+            const resultPage = document.getElementById("result-page");
+            const loginForm = document.getElementById("login-form");
+            const countdownDisplay = document.getElementById("countdown-timer");
+            const sessNama = document.getElementById("sess-nama");
+            const sessAsal = document.getElementById("sess-asal");
+            const progressPercent = document.getElementById("progress-percent");
+            const progressBar = document.getElementById("progress-bar");
+            const questionCategory = document.getElementById("question-category");
+            const currentQNum = document.getElementById("current-q-num");
+            const questionText = document.getElementById("question-text");
+            const optionsWrapper = document.getElementById("options-wrapper");
+            const numberNavGrid = document.getElementById("number-nav-grid");
+            const btnPrev = document.getElementById("btn-prev");
+            const btnNext = document.getElementById("btn-next");
+            const btnSubmitExam = document.getElementById("btn-submit-exam");
+            const btnWhatsappSend = document.getElementById("btn-whatsapp-send");
+
+            // Simulasi Loading Screen
+            setTimeout(() => {
+                loadingScreen.classList.add("hide");
+                checkExistingSession();
+            }, 1200);
+
+            function checkExistingSession() {
+                const storedUser = localStorage.getItem("spmb_user");
+                const storedAnswers = localStorage.getItem("spmb_answers");
+                const storedTime = localStorage.getItem("spmb_time_left");
+
+                if (storedUser) {
+                    userData = JSON.parse(storedUser);
+                    userAnswers = storedAnswers ? JSON.parse(storedAnswers) : {};
+                    if (storedTime) totalTime = parseInt(storedTime, 10);
+                    
+                    if (totalTime <= 0) {
+                        evaluateAndShowResult();
+                    } else {
+                        startExamSession();
+                    }
+                }
+            }
+
+            loginForm.addEventListener("submit", (e) => {
+                e.preventDefault();
+                userData = {
+                    nama: document.getElementById("nama").value.trim(),
+                    nisn: document.getElementById("nisn").value.trim(),
+                    jk: document.querySelector('input[name="jk"]:checked').value,
+                    asal_sekolah: document.getElementById("asal_sekolah").value.trim(),
+                    alamat: document.getElementById("alamat").value.trim(),
+                    whatsapp: document.getElementById("whatsapp").value.trim()
+                };
+
+                localStorage.setItem("spmb_user", JSON.stringify(userData));
+                localStorage.setItem("spmb_answers", JSON.stringify(userAnswers));
+                localStorage.setItem("spmb_time_left", totalTime.toString());
+                startExamSession();
+            });
+
+            function startExamSession() {
+                loginPage.classList.add("hide");
+                quizPage.classList.remove("hide");
+                sessNama.textContent = userData.nama;
+                sessAsal.textContent = userData.asal_sekolah;
+                
+                renderQuestion();
+                renderNavigationGrid();
+                updateProgressBar();
+                startTimer();
+            }
+
+            function startTimer() {
+                clearInterval(examTimer);
+                examTimer = setInterval(() => {
+                    if (totalTime <= 0) {
+                        clearInterval(examTimer);
+                        alert("Waktu habis! Jawaban Anda otomatis disimpan.");
+                        evaluateAndShowResult();
+                    } else {
+                        totalTime--;
+                        localStorage.setItem("spmb_time_left", totalTime.toString());
+                        let minutes = Math.floor(totalTime / 60);
+                        let seconds = totalTime % 60;
+                        countdownDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                    }
+                }, 1000);
+            }
+
+            function renderQuestion() {
+                const currentQuestion = questions[currentQuestionIndex];
+                questionCategory.textContent = `Kategori: ${currentQuestion.kategori}`;
+                currentQNum.textContent = currentQuestion.id;
+                questionText.innerHTML = currentQuestion.question;
+                optionsWrapper.innerHTML = "";
+                
+                const labels = ["A", "B", "C", "D"];
+                currentQuestion.options.forEach((optionText, index) => {
+                    const letter = labels[index];
+                    const optionItem = document.createElement("div");
+                    optionItem.className = `option-item ${userAnswers[currentQuestion.id] === letter ? 'selected' : ''}`;
+                    optionItem.innerHTML = `
+                        <div class="option-indicator">${letter}</div>
+                        <div class="option-text">${optionText}</div>
+                    `;
+                    optionItem.addEventListener("click", () => selectAnswer(currentQuestion.id, letter));
+                    optionsWrapper.appendChild(optionItem);
+                });
+
+                btnPrev.disabled = currentQuestionIndex === 0;
+                btnNext.innerHTML = currentQuestionIndex === questions.length - 1 ? `Selesai <i class="fa-solid fa-flag-checkered"></i>` : `Selanjutnya <i class="fa-solid fa-arrow-right"></i>`;
+            }
+
+            function selectAnswer(questionId, letter) {
+                userAnswers[questionId] = letter;
+                localStorage.setItem("spmb_answers", JSON.stringify(userAnswers));
+                renderQuestion();
+                updateNavigationGridStatus(questionId);
+                updateProgressBar();
+            }
+
+            function renderNavigationGrid() {
+                numberNavGrid.innerHTML = "";
+                questions.forEach((q, idx) => {
+                    const numBtn = document.createElement("button");
+                    numBtn.className = `num-btn ${userAnswers[q.id] ? 'answered' : ''} ${idx === currentQuestionIndex ? 'active' : ''}`;
+                    numBtn.id = `nav-num-${q.id}`;
+                    numBtn.textContent = q.id;
+                    numBtn.addEventListener("click", () => {
+                        currentQuestionIndex = idx;
+                        setActiveNavigationBtn();
+                        renderQuestion();
+                    });
+                    numberNavGrid.appendChild(numBtn);
+                });
+            }
+
+            function setActiveNavigationBtn() {
+                document.querySelectorAll(".num-btn").forEach((btn, idx) => {
+                    btn.classList.remove("active");
+                    if (idx === currentQuestionIndex) btn.classList.add("active");
+                });
+            }
+
+            function updateNavigationGridStatus(questionId) {
+                const targetBtn = document.getElementById(`nav-num-${questionId}`);
+                if (targetBtn) targetBtn.classList.add("answered");
+            }
+
+            function updateProgressBar() {
+                const answeredCount = Object.keys(userAnswers).length;
+                const percent = Math.round((answeredCount / questions.length) * 100);
+                progressPercent.textContent = `${percent}%`;
+                progressBar.style.width = `${percent}%`;
+            }
+
+            btnPrev.addEventListener("click", () => {
+                if (currentQuestionIndex > 0) { currentQuestionIndex--; setActiveNavigationBtn(); renderQuestion(); }
+            });
+
+            btnNext.addEventListener("click", () => {
+                if (currentQuestionIndex < questions.length - 1) { currentQuestionIndex++; setActiveNavigationBtn(); renderQuestion(); } 
+                else { confirmAndFinishExam(); }
+            });
+
+            btnSubmitExam.addEventListener("click", confirmAndFinishExam);
+
+            function confirmAndFinishExam() {
+                const totalAnswered = Object.keys(userAnswers).length;
+                let confirmMsg = `Apakah Anda yakin ingin mengakhiri tes? Anda telah menjawab ${totalAnswered} dari ${questions.length} soal.`;
+                if (totalAnswered < questions.length) confirmMsg += `\n\nPERINGATAN: Ada soal yang BELUM dijawab!`;
+                if (confirm(confirmMsg)) evaluateAndShowResult();
+            }
+
+            function evaluateAndShowResult() {
+                clearInterval(examTimer);
+                let benar = 0; let salah = 0;
+                
+                questions.forEach((q) => {
+                    if (userAnswers[q.id] && userAnswers[q.id] === q.answer) benar++; else salah++;
+                });
+
+                const nilaiAkhir = Math.round((benar / questions.length) * 100);
+                let kategori = nilaiAkhir >= 90 ? "Sangat Baik" : nilaiAkhir >= 80 ? "Baik" : nilaiAkhir >= 70 ? "Cukup" : "Perlu Pembinaan";
+
+                const skrg = new Date();
+                const stringTanggal = skrg.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
+                const stringJam = skrg.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB';
+
+                document.getElementById("res-nama").textContent = userData.nama;
+                document.getElementById("res-nisn").textContent = userData.nisn;
+                document.getElementById("res-jk").textContent = userData.jk;
+                document.getElementById("res-asal").textContent = userData.asal_sekolah;
+                document.getElementById("res-alamat").textContent = userData.alamat;
+                document.getElementById("res-wa").textContent = userData.whatsapp;
+                document.getElementById("res-benar").textContent = benar;
+                document.getElementById("res-salah").textContent = salah;
+                document.getElementById("res-skor").textContent = nilaiAkhir;
+                document.getElementById("res-kategori").textContent = kategori;
+                document.getElementById("res-tanggal").textContent = stringTanggal;
+                document.getElementById("res-jam").textContent = stringJam;
+
+                quizPage.classList.add("hide");
+                resultPage.classList.remove("hide");
+
+                setupWhatsAppButton(benar, salah, nilaiAkhir, kategori, stringTanggal, stringJam);
+            }
+
+            function setupWhatsAppButton(benar, salah, nilai, kategori, tanggal, jam) {
+                btnWhatsappSend.addEventListener("click", () => {
+                    const noTujuan = "6283198636463";
+                    const teksPesan = `======================================\nHASIL TES ONLINE SPMB\nSMK IT AL HUDA CINTAMULYA\n======================================\n\nNama :\n${userData.nama}\n\nNISN :\n${userData.nisn}\n\nJenis Kelamin :\n${userData.jk}\n\nAsal Sekolah :\n${userData.asal_sekolah}\n\nAlamat Rumah :\n${userData.alamat}\n\nNo WhatsApp :\n${userData.whatsapp}\n\nJumlah Benar :\n${benar}\n\nJumlah Salah :\n${salah}\n\nNilai :\n${nilai}\n\nKategori :\n${kategori}\n\nTanggal :\n${tanggal}\n\nJam :\n${jam}\n\n======================================\nPeserta telah menyelesaikan Tes Online SPMB.\n======================================`;
+                    
+                    localStorage.clear();
+                    window.open(`https://wa.me/${noTujuan}?text=${encodeURIComponent(teksPesan)}`, '_blank');
+                });
+            }
+        });
+    </script>
+</body>
+</html>
